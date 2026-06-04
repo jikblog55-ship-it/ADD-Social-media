@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup</title>
+</head>
+<body>
+
+<h2 class="userEmail">Not Logged In</h2>
+
+<input type="email" class="email" placeholder="Email">
+<input type="password" class="password" placeholder="Password">
+
+<button onclick="signup()">Sign Up</button>
+
+<script type="module">
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js";
+
+const supabase = createClient(
+  "https://wgylobjcxqmjsutgdhdz.supabase.co",
+  "sb_publishable_IfpDVaKbbxem461SnCl9UA_LFwdNOon"
+);
+
+window.signup = async function () {
+
+  const email = document.querySelector(".email").value;
+  const password = document.querySelector(".password").value;
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  if (data.user) {
+    document.querySelector(".userEmail").innerText =
+      data.user.email;
+  }
+
+  alert("Signup Success");
+};
+
+// Refresh ke baad bhi email show karega
+async function checkUser() {
+
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    document.querySelector(".userEmail").innerText =
+      user.email;
+  }
+}
+
+checkUser();
+</script>
+
+</body>
+</html>
